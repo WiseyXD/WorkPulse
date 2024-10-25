@@ -1,7 +1,11 @@
 
 "use client"
-
+import { useState } from "react"
 import * as React from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { MenuIcon, Send, X } from 'lucide-react'
 import {
   AudioWaveform,
   BadgeCheck,
@@ -111,7 +115,7 @@ const data = {
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Stared",
           url: "#",
         },
         {
@@ -206,8 +210,63 @@ const data = {
 }
 
 export default function Page() {
-  const [activeTeam, setActiveTeam] = React.useState(data.teams[0])
+  const [activeTeam, setActiveTeam] = useState(data.teams[0]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: 'Hello! How can I assist you today?' },
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
 
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+  // Function to call askGpt API
+  const fetchAskGptResponse = async (userMessage: string) => {
+    try {
+      const response = await fetch('/api/askGpt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: userMessage,
+          // slackMessages: messages,
+          channelId: process.env.NEXT_PUBLIC_SLACK_CHANNEL_ID,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.response) {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: data.response },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: 'Something went wrong. Please try again.' },
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching response from askGpt API:', error);
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: 'Error: Unable to reach the assistant.' },
+      ]);
+    }
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputMessage.trim()) {
+      // Add the user's message to the messages array
+      setMessages([...messages, { role: 'user', content: inputMessage }]);
+
+      // Save message and clear input
+      const userMessage = inputMessage;
+      setInputMessage('');
+
+      // Fetch response from askGpt API
+      fetchAskGptResponse(userMessage);
+    }
+  };
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
@@ -464,13 +523,37 @@ export default function Page() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        {/* Main content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Chat messages */}
+          <ScrollArea className="flex-1 p-4">
+            {messages.map((message, index) => (
+              <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                <div className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+                  {message.content}
+                </div>
+              </div>
+            ))}
+          </ScrollArea>
+
+          {/* Message input */}
+          <form onSubmit={handleSendMessage} className="p-4 bg-white border-t">
+            <div className="flex items-center">
+              <Button variant="ghost" size="icon" className="md:hidden mr-2" onClick={toggleSidebar}>
+                <MenuIcon className="h-6 w-6" />
+              </Button>
+              <Input
+                type="text"
+                placeholder="Type your message..."
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                className="flex-1"
+              />
+              <Button type="submit" size="icon" className="ml-2">
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </form>
         </div>
       </SidebarInset>
     </SidebarProvider>

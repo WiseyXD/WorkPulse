@@ -2,19 +2,20 @@
 import { useState, useEffect } from 'react';
 export default function Home() {
   const [messages, setMessages] = useState([]);
-  const channelId = 'C07TC0XJC03'; // Replace with your actual Slack channel ID  
+  const channelId = process.env.NEXT_PUBLIC_SLACK_CHANNEL_ID;// Replace with your actual Slack channel ID  
   useEffect(() => {
-
     async function fetchMessages() {
       try {
         const response = await fetch(`/api/slackMessages?channelId=${channelId}`);
         console.log(response);
         const data = await response.json();
         setMessages(data.messages);
+        console.log(data);
       } catch (error) {
         console.error('Error fetching messages:', error);
       }
-    } fetchMessages();
+    }
+    fetchMessages();
   }, []);
   return (
     <div>
