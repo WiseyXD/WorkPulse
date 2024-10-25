@@ -4,6 +4,7 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const channelId = 'C07TC0XJC03'; // Replace with your actual Slack channel ID  
   useEffect(() => {
+
     async function fetchMessages() {
       try {
         const response = await fetch(`/api/slackMessages?channelId=${channelId}`);

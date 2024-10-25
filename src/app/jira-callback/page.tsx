@@ -31,7 +31,7 @@ const JiraCallback = () => {
             const { access_token } = response.data;
             console.log(access_token);
             localStorage.setItem('jiraAccessToken', access_token);
-            router.push('/home');
+            router.push('/mvp');
           } catch (error) {
             console.error('Error fetching Jira access token:', error);
           }
