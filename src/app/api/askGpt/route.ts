@@ -9,16 +9,7 @@ const openai = new OpenAI({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
 });
 export async function POST(request: Request) {
-    // const cloudId = process.env.NEXT_PUBLIC_JIRA_CLOUDID;
-    // const authHeader = request.headers.get('Authorization');
-    // if (!authHeader) {
-    //     return NextResponse.json({ error: 'Authorization token missing' }, { status: 401 });
-    // }
-
-    // const token = authHeader.split(' ')[1]; // Extract the token cloudId = process.env.NEXT_PUBLIC_JIRA_CLOUDID;
-    // console.log(token);
     try {
-        // Parse the incoming request to get the user's prompt and channel ID
         const { prompt, channelId } = await request.json();
 
         if (!prompt || !channelId) {
@@ -28,7 +19,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Step 1: Fetch messages from Slack
         const slackResult = await slackClient.conversations.history({
             channel: channelId,
             limit: 30,
@@ -38,7 +28,6 @@ export async function POST(request: Request) {
             throw new Error(`Error fetching messages: ${slackResult.error}`);
         }
 
-        // Map messages to a simplified structure and fetch usernames
         const userCache: Record<string, string> = {};
         const messages = await Promise.all(
             slackResult.messages.map(async (message: any) => {
@@ -64,31 +53,10 @@ export async function POST(request: Request) {
             })
         );
 
-        //         const jiraResponse = await axios.get(`https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/project/search`, {
-        //             headers: {
-        //                 Authorization: `Bearer ${token}`,
-        //                 Accept: 'application/json',
-        //             },
-        //         });
-
-        //         if (!jiraResponse.ok) {
-        //             throw new Error('Error fetching Jira issues');
-        //         }
-
-        //         const jiraData = await jiraResponse.json();
-        //         console.log(jiraData);
-        //         const issues = jiraData.issues.map((issue: any) => ({
-        //             key: issue.key,
-        //             summary: issue.fields.summary,
-        //             status: issue.fields.status.name,
-        //         }));
-
-        //         console.log(issues)
-        // Step 2: Send the Slack messages and user prompt to ChatGPT
         const chatMessages = [
             {
                 role: 'system',
-                content: 'You are an AI assistant that provides insights based on Slack messages.',
+                content: 'You are an AI assistant that provides insights based on Slack messages and Jira issues and boards, do support multilingual feature and if and only if there is a prompt where the user is saying to push a message in slack channel or add a card/issue in jira or trello then return a prompt saying that ":the task you requested is done." ',
             },
             {
                 role: 'user',
@@ -102,6 +70,7 @@ export async function POST(request: Request) {
 
         const gptResponse = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
+            // @ts-ignore
             messages: chatMessages,
             max_tokens: 100,
         });

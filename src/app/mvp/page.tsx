@@ -178,7 +178,6 @@ const data = {
       url: "#",
       icon: PieChart,
     },
-
   ],
 }
 
@@ -486,7 +485,7 @@ export default function Page() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Building Your Application
+                    Building Your Workflow
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />

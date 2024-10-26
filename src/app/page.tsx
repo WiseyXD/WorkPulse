@@ -15,7 +15,7 @@ import {
       <header className="container mx-auto px-4 py-8 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-black rounded-full"></div>
-          <span className="text-2xl font-bold text-black">TeamSync</span>
+          <span className="text-2xl font-bold text-black">WorkPulse</span>
         </div>
         <nav className="hidden md:flex space-x-8">
           <a href="#features" className="text-gray-800 hover:text-black transition-colors">Features</a>
@@ -86,7 +86,7 @@ import {
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
             <div className="w-8 h-8 bg-black rounded-full"></div>
-            <span className="text-xl font-bold text-black">TeamSync</span>
+            <span className="text-xl font-bold text-black">WorkPulse</span>
           </div>
           <nav className="flex flex-wrap justify-center md:justify-end space-x-6">
             <a href="#" className="text-gray-700 hover:text-black transition-colors">About</a>
