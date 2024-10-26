@@ -1,36 +1,3 @@
-// import { WebClient } from '@slack/web-api';
-// import { NextResponse } from 'next/server';// Your Slack OAuth token (use environment variables for security)
-// const token = process.env.SLACK_BOT;
-// const client = new WebClient(token);
-// export async function GET(request: any) {
-//     // Get the channelId from the request URL
-//     const { searchParams } = new URL(request.url);
-//     const channelId = searchParams.get('channelId');
-//     if (!channelId) {
-//         return NextResponse.json({ error: 'Channel ID is required' }, { status: 400 });
-//     } try {
-//         const result = await client.conversations.history({
-//             channel: channelId,
-//             limit: 100
-//         });
-//         console.log(result);
-//         if (result.ok) {
-//             const messages = result?.messages.map((message: any) => ({
-//                 text: message.text,
-//                 sender: message.user,
-//                 timestamp: message.ts,
-//             }));
-//             return NextResponse.json({ messages });
-
-//         } else {
-//             console.error('Error fetching messages:', result.error);
-//             throw new Error(result.error);
-//         }
-//     } catch (error) {
-//         console.error('Error fetching messages:', error);
-//         return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
-//     }
-// }
 import { WebClient } from '@slack/web-api';
 import { NextResponse } from 'next/server';
 

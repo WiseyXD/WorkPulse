@@ -2,13 +2,21 @@
 import { WebClient } from '@slack/web-api';
 import { NextResponse } from 'next/server';
 import { OpenAI } from 'openai';// Initialize the OpenAI client
-
+import axios from "axios";
 const slackToken = process.env.SLACK_BOT;
 const slackClient = new WebClient(slackToken);
 const openai = new OpenAI({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
 });
 export async function POST(request: Request) {
+    // const cloudId = process.env.NEXT_PUBLIC_JIRA_CLOUDID;
+    // const authHeader = request.headers.get('Authorization');
+    // if (!authHeader) {
+    //     return NextResponse.json({ error: 'Authorization token missing' }, { status: 401 });
+    // }
+
+    // const token = authHeader.split(' ')[1]; // Extract the token cloudId = process.env.NEXT_PUBLIC_JIRA_CLOUDID;
+    // console.log(token);
     try {
         // Parse the incoming request to get the user's prompt and channel ID
         const { prompt, channelId } = await request.json();
@@ -56,6 +64,26 @@ export async function POST(request: Request) {
             })
         );
 
+        //         const jiraResponse = await axios.get(`https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/project/search`, {
+        //             headers: {
+        //                 Authorization: `Bearer ${token}`,
+        //                 Accept: 'application/json',
+        //             },
+        //         });
+
+        //         if (!jiraResponse.ok) {
+        //             throw new Error('Error fetching Jira issues');
+        //         }
+
+        //         const jiraData = await jiraResponse.json();
+        //         console.log(jiraData);
+        //         const issues = jiraData.issues.map((issue: any) => ({
+        //             key: issue.key,
+        //             summary: issue.fields.summary,
+        //             status: issue.fields.status.name,
+        //         }));
+
+        //         console.log(issues)
         // Step 2: Send the Slack messages and user prompt to ChatGPT
         const chatMessages = [
             {
@@ -75,6 +103,7 @@ export async function POST(request: Request) {
         const gptResponse = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
             messages: chatMessages,
+            max_tokens: 100,
         });
 
         const responseContent = gptResponse.choices[0]?.message?.content || 'No response from ChatGPT.';

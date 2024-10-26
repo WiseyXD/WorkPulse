@@ -82,13 +82,13 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "aryan.nagbanshi22",
+    email: "aryan.nagbanshi22@it.sce.edu.in",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
-      name: "Team Sync",
+      name: "Team ALT+F4",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
@@ -105,7 +105,7 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Project Pulse",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
@@ -116,29 +116,6 @@ const data = {
         },
         {
           title: "Stared",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
           url: "#",
         },
       ],
@@ -192,20 +169,16 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
+      name: "Work Pulse",
       url: "#",
       icon: PieChart,
     },
     {
-      name: "Travel",
+      name: "Work Pulse Final",
       url: "#",
-      icon: Map,
+      icon: PieChart,
     },
+
   ],
 }
 
@@ -233,6 +206,7 @@ export default function Page() {
       });
 
       const data = await response.json();
+      console.log(data)
       if (response.ok && data.response) {
         setMessages((prev) => [
           ...prev,
