@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { useRouter } from 'next/navigation';
 
 const Dashboard = () => {
+  // best thing to do was to lose
   const router = useRouter();
   const [projects, setProjects] = useState([]);
   useEffect(() => {
